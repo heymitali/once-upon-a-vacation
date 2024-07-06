@@ -8,6 +8,8 @@ const tourSchema = new mongoose.Schema(
       required: [true, 'A tour must have a name'],
       unique: true,
       trim: true,
+      maxLength: [40, "A tour's name must not be greater than 40 characters"],
+      minLength: [10, "A tour's name must not be lesser than 10 characters"],
     },
     slug: {
       type: String,
@@ -31,16 +33,31 @@ const tourSchema = new mongoose.Schema(
     difficulty: {
       type: String,
       required: [true, 'A tour must have a name'],
+      enum: {
+        values: ['easy', 'midium', 'difficult'],
+        message: 'Difficulty is either: easy, medium or difficult',
+      },
     },
     ratingsAverage: {
       type: Number,
       default: 4.5,
+      min: [0, "A tour's rating must not be less than 0"],
+      max: [5, "A tour's rating must not be greater than 5"],
     },
     ratingsQuantity: {
       type: Number,
       default: 0,
     },
-    priceDiscount: Number,
+    priceDiscount: {
+      type: Number,
+      validate: {
+        validator: function (val) {
+          // "this" only points to current doc on new document creation
+          return val < this.price;
+        },
+        message: 'Discount price ({VALUE}) should be below the regular price',
+      },
+    },
     summary: {
       type: String,
       trim: true,
@@ -90,8 +107,9 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 
+// Aggregation pipeline middleware
 tourSchema.pre('aggregate', function (next) {
-  console.log(this.pipeline);
+  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
   next();
 });
 
