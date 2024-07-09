@@ -16,10 +16,10 @@ app.use(express.json());
 // }
 app.use(morgan('dev'));
 
-app.use((req, res, next) => {
-  console.log('Hello from the middleware !');
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log('Hello from the middleware !');
+//   next();
+// });
 
 // ROUTE HANDLERS
 const getRoot = (req, res) => {
