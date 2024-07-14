@@ -59,11 +59,14 @@ exports.protect = catchAsync(async (req, res, next) => {
   // 1) getting the token and check if it's there
 
   const recievedToken = req.headers.authorization;
+  console.log('>> recievedToken: ', recievedToken);
 
   if (recievedToken && recievedToken.startsWith('Bearer')) {
     token = recievedToken.split(' ')[1];
+    console.log('>> token: ', token);
   }
 
+  console.log('before validation');
   if (!token) {
     return next(
       new AppError('You are not logged in! Please login to access.', 401),
@@ -71,8 +74,11 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
 
   // 2) verifying the token
+  console.log('here i am!');
+  console.log(token);
 
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  console.log('decoded', decoded);
 
   // 3) check if users still exists
 
@@ -193,15 +199,17 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.upadatePassword = catchAsync(async (req, res, next) => {
+exports.updatePassword = catchAsync(async (req, res, next) => {
   // 1) get the user from collection
 
-  const { id, currenPassword, newPassword, newPasswordConfirm } = req.body;
-  const user = await User.findById({ id }).select('+password');
+  const { currentPassword, newPassword, newPasswordConfirm } = req.body;
+  const user = await User.findById(req.user.id).select('+password');
+
+  // console.log('user', user);
 
   // 2) check if POSTed current password is correct
 
-  if (!(await user.isPasswordCorrect(currenPassword, user.password))) {
+  if (!(await user.isPasswordCorrect(currentPassword, user.password))) {
     return next(
       new AppError(
         'The password provided is not correct! Please check and try again.',
@@ -221,6 +229,7 @@ exports.upadatePassword = catchAsync(async (req, res, next) => {
   // 4) login user and send jwt
 
   const token = signToken(user._id);
+
   res.status(200).json({
     status: 'success',
     token,
