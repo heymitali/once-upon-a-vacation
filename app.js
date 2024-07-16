@@ -11,6 +11,7 @@ const morgan = require('morgan');
 
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
+const reviewRouter = require('./routes/reviewRoutes');
 
 // GLOBAL MIDDLEWARES
 // Set security HTTP headers
@@ -71,6 +72,7 @@ app.route('/').get(getRoot).post(postRoot);
 // Requests to /api/v1/tours will pass through tourRouter and same for the other
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 app.all('*', (req, res, next) => {
   // res.status(404).json({
