@@ -42,8 +42,9 @@ const tourSchema = new mongoose.Schema(
     ratingsAverage: {
       type: Number,
       default: 4.5,
-      min: [0, "A tour's rating must not be less than 0"],
-      max: [5, "A tour's rating must not be greater than 5"],
+      min: [1, 'Rating must be above 1.0'],
+      max: [5, 'Rating must be below 5.0'],
+      set: (val) => Math.round(val * 10) / 10, // 4.666666, 46.6666, 47, 4.7
     },
     ratingsQuantity: {
       type: Number,
@@ -118,6 +119,9 @@ const tourSchema = new mongoose.Schema(
     },
   },
 );
+
+tourSchema.index({ price: 1, ratingsAverage: -1 });
+tourSchema.index({ slug: 1 });
 
 tourSchema.virtual('durationInWeeks').get(function () {
   return this.duration / 7;
