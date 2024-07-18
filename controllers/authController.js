@@ -72,14 +72,13 @@ exports.protect = catchAsync(async (req, res, next) => {
   // 1) getting the token and check if it's there
 
   const recievedToken = req.headers.authorization;
-  console.log('>> recievedToken: ', recievedToken);
 
   if (recievedToken && recievedToken.startsWith('Bearer')) {
     token = recievedToken.split(' ')[1];
-    console.log('>> token: ', token);
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
   }
 
-  console.log('before validation');
   if (!token) {
     return next(
       new AppError('You are not logged in! Please login to access.', 401),
@@ -87,11 +86,8 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
 
   // 2) verifying the token
-  console.log('here i am!');
-  console.log(token);
 
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  console.log('decoded', decoded);
 
   // 3) check if users still exists
 
@@ -119,6 +115,41 @@ exports.protect = catchAsync(async (req, res, next) => {
   req.user = currentUser;
   next();
 });
+
+// Only for rendered pages, no errors!
+exports.isLoggedIn = async (req, res, next) => {
+  if (req.cookies.jwt) {
+    try {
+      // 1) verify token
+      const decoded = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        process.env.JWT_SECRET,
+      );
+
+      // 2) Check if user still exists
+      const currentUser = await User.findById(decoded.id);
+      if (!currentUser) {
+        return next();
+      }
+
+      // 3) Check if user changed password after the token was issued
+      if (currentUser.isPasswordChanged(decoded.iat)) {
+        console.log('password changed');
+
+        return next();
+      }
+
+      // THERE IS A LOGGED IN USER
+      res.locals.user = currentUser;
+      return next();
+    } catch (err) {
+      return next();
+    }
+  }
+  console.log('do not have cookies.jwt');
+
+  next();
+};
 
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {

@@ -5,13 +5,19 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const hpp = require('hpp');
+const path = require('path');
+const viewRouter = require('./routes/viewRoutes');
 
 const app = express();
 const morgan = require('morgan');
 
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
+const cookieParser = require('cookie-parser');
 
 // GLOBAL MIDDLEWARES
 // Set security HTTP headers
@@ -32,6 +38,7 @@ app.use('/api', limiter);
 
 // Body parser, reading data from body into req.body
 app.use(express.json({ limit: '10kb' }));
+app.use(cookieParser());
 
 // Data sanitization against NoSQL query injection
 app.use(mongoSanitize());
@@ -51,24 +58,10 @@ app.use(
 );
 
 // Serving static files
-app.use(express.static(`${__dirname}/public`));
-
-// ROUTE HANDLERS
-const getRoot = (req, res) => {
-  res.status(200).json({
-    message: 'Hi there! This is my server and i created it.',
-    project: 'natours',
-  });
-};
-
-const postRoot = (req, res) => {
-  res.status(200).json({ name: 'Rachel Green', age: '30' });
-};
+app.use(express.static(path.join(__dirname, 'public')));
 
 // ROUTES
-
-app.route('/').get(getRoot).post(postRoot);
-
+app.use('/', viewRouter);
 // Requests to /api/v1/tours will pass through tourRouter and same for the other
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
