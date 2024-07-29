@@ -7,6 +7,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const hpp = require('hpp');
 const path = require('path');
 const viewRouter = require('./routes/viewRoutes');
+const compression = require('compression');
 
 const app = express();
 const morgan = require('morgan');
@@ -17,6 +18,8 @@ app.set('views', path.join(__dirname, 'views'));
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
+const bookingRouter = require('./routes/bookingRoutes');
+
 const cookieParser = require('cookie-parser');
 
 // GLOBAL MIDDLEWARES
@@ -61,12 +64,16 @@ app.use(
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(compression());
+
 // ROUTES
 app.use('/', viewRouter);
+
 // Requests to /api/v1/tours will pass through tourRouter and same for the other
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
+app.use('/api/v1/bookings', bookingRouter);
 
 app.all('*', (req, res, next) => {
   // res.status(404).json({
