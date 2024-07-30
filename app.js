@@ -1,12 +1,10 @@
 const express = require('express');
-const AppError = require('./utils/appError');
-const globalErrorHandler = require('./controllers/errorController');
+const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const hpp = require('hpp');
 const path = require('path');
-const viewRouter = require('./routes/viewRoutes');
 const compression = require('compression');
 
 const app = express();
@@ -15,12 +13,13 @@ const morgan = require('morgan');
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
-const tourRouter = require('./routes/tourRoutes');
-const userRouter = require('./routes/userRoutes');
-const reviewRouter = require('./routes/reviewRoutes');
+const AppError = require('./utils/appError');
 const bookingRouter = require('./routes/bookingRoutes');
-
-const cookieParser = require('cookie-parser');
+const reviewRouter = require('./routes/reviewRoutes');
+const userRouter = require('./routes/userRoutes');
+const tourRouter = require('./routes/tourRoutes');
+const viewRouter = require('./routes/viewRoutes');
+const globalErrorHandler = require('./controllers/errorController');
 
 // GLOBAL MIDDLEWARES
 // Set security HTTP headers

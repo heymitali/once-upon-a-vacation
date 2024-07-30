@@ -89,8 +89,16 @@ exports.updateUserData = catchAsync(async (req, res, next) => {
 exports.bookTour = catchAsync(async (req, res, next) => {
   const tour = await Tour.findById(req.params.tourId);
 
+  console.log('xyz');
+
   res.status(200).render('thankyou', {
     title: 'Booking Confirm!',
     tour: tour,
   });
 });
+
+exports.getSignupForm = (req, res) => {
+  res.status(200).render('signup', {
+    title: 'Create your account',
+  });
+};

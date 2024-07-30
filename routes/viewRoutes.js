@@ -10,11 +10,15 @@ router.get('/tour/:slug', authController.isLoggedIn, viewsController.getTour);
 router.get('/login', authController.isLoggedIn, viewsController.getLoginForm);
 router.get('/me', authController.protect, viewsController.getAccount);
 
-// router.get(
-//   '/bookTour/:tourId',
-//   authController.isLoggedIn,
-//   viewsController.bookTour,
-// );
+router.get(
+  '/bookTour/:tourId',
+  authController.isLoggedIn,
+  viewsController.bookTour,
+);
+
+router
+  .route('/signup')
+  .get(authController.isLoggedIn, viewsController.getSignupForm);
 
 router.get('/my-tours', authController.protect, viewsController.getMyTours);
 
