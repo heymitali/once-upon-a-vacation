@@ -56,6 +56,7 @@ const userSchema = mongoose.Schema({
     default: true,
     select: false,
   },
+  bookings: [String],
 });
 
 userSchema.pre('save', async function (next) {

@@ -8,17 +8,24 @@ router.use(authController.protect);
 
 // router.get('/checkout-session/:tourId', bookingController.getCheckoutSession);
 
-router.use(authController.restrictTo('admin', 'lead-guide'));
+// router.use(authController.restrictTo('admin', 'lead-guide'));
+
+// router
+//   .route('/')
+//   .get(bookingController.getAllBookings)
+//   .post(bookingController.createBooking);
+
+// router.route('/:userId').get(bookingController.getAllBookings);
+//   .patch(bookingController.updateBooking)
+//   .delete(bookingController.deleteBooking);
 
 router
-  .route('/')
-  .get(bookingController.getAllBookings)
-  .post(bookingController.createBooking);
+  .route('/:tourId')
+  .post(authController.isLoggedIn, bookingController.createBooking)
+  .get(authController.protect, bookingController.getBooking);
 
 router
-  .route('/:id')
-  .get(bookingController.getBooking)
-  .patch(bookingController.updateBooking)
-  .delete(bookingController.deleteBooking);
+  .route('/myBookings')
+  .get(authController.isLoggedIn, bookingController.getAllBookings);
 
 module.exports = router;

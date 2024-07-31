@@ -1,0 +1,11 @@
+//- my-bookings.pug (child template)
+
+extends base
+
+block content
+  h1 My Bookings
+  .bookings-list
+    each booking in bookings
+      span.booking-div= `${booking}`
+      br
+      br

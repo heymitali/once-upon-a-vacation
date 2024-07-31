@@ -16,6 +16,12 @@ exports.getOverview = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getEntryPage = catchAsync(async (req, res, next) => {
+  res.status(200).render('entryPage', {
+    title: 'Your Passport to Discovery',
+  });
+});
+
 exports.getTour = catchAsync(async (req, res, next) => {
   // 1) Get the data, for the requested tour (including reviews and guides)
   const tour = await Tour.findOne({ slug: req.params.slug }).populate({
@@ -55,6 +61,15 @@ exports.getLoginForm = (req, res) => {
   });
 };
 
+exports.getMyBookings = catchAsync(async (req, res) => {
+  const bookings = await Booking.find({ user: res.locals.user.id });
+
+  res.status(200).render('myBookings', {
+    title: 'My Bookings',
+    bookings,
+  });
+});
+
 exports.getAccount = (req, res) => {
   res.status(200).render('account', {
     title: 'Your account',
@@ -87,10 +102,27 @@ exports.updateUserData = catchAsync(async (req, res, next) => {
 });
 
 exports.bookTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.tourId);
+  const id = req.params.tourId;
+  console.log('id >>> ', id);
 
-  console.log('xyz');
+  const tour = await Tour.findById(id);
 
+  // Assuming req.user.id is the user's ID
+  // const updateUserBookings = await User.findByIdAndUpdate(
+  //   req.user.id,
+  //   { $push: { bookings: tour._id } }, // Push the tourId into the bookings array
+  //   { new: true }, // Return the updated user document
+  // );
+
+  // // Render the account page with the updated user data
+  // res.status(200).render('account', {
+  //   title: 'Your account',
+  //   user: updateUserBookings,
+  // });
+
+  // Update tour in booking (you can add your logic here)
+
+  // Render the thank you page
   res.status(200).render('thankyou', {
     title: 'Booking Confirm!',
     tour: tour,
