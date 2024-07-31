@@ -2,19 +2,20 @@ extends base
 
 block content
   main.main
-    h2.heading-primary.bg-green Thank You for Booking!
-    .tour-card
-      .tour-card__image
-        img(src=`/img/tours/${tour.images[0]}`, alt=`${tour.name}`)
-      .tour-card__details
-        h3.tour-card__title= `${tour.name}`
-        .tour-card__info
-          p.tour-card__duration
-            | Duration: 
-            span.tour-card__duration-value= `${tour.duration} days`
-          p.tour-card__price
-            | Price: 
-            span.tour-card__price-value= `${tour.price} USD`
-          p.tour-card__date
-            | Date: 
-            span.tour-card__date-value= `${tour.startDates[0]}`
+    .container-heading
+      h2.heading-primary-thankyou.bg-green Thank You for Booking!
+      .tour-card
+        .tour-card__image
+          img(src=`/img/tours/${tour.images[0]}`, alt=`${tour.name}`)
+        .tour-card__details
+          h3.tour-card__title= `${tour.name}`
+          .tour-card__info
+            p.tour-card__duration
+              | Duration: 
+              span.tour-card__duration-value= `${tour.duration} days`
+            p.tour-card__price
+              | Price: 
+              span.tour-card__price-value= `${tour.price} USD`
+            p.tour-card__date
+              | Date: 
+              span.tour-card__date-value= `${tour.startDates[0]}`

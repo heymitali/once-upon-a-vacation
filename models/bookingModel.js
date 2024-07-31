@@ -26,9 +26,9 @@ const bookingSchema = new mongoose.Schema({
 });
 
 bookingSchema.pre(/^find/, function (next) {
-  this.populate('user').populate({
+  this.populate({
     path: 'tour',
-    select: 'name',
+    select: 'name startDates price images difficulty', // Specify the fields to populate
   });
   next();
 });

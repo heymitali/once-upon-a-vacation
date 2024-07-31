@@ -1,11 +1,28 @@
-//- my-bookings.pug (child template)
+//- booking-cards.pug
 
 extends base
 
 block content
-  h1 My Bookings
-  .bookings-list
+  h1.heading My Bookings
+  if bookings.length === 0
+    p.no-bookings No bookings yet 😔
+    a.explore-now(href="/") Explore Now!
+  else
     each booking in bookings
-      span.booking-div= `${booking}`
-      br
-      br
+      .booking-card-container
+        .booking-card
+          img.booking-card__image(src=`/img/tours/${booking.tour.images[0]}`, alt=`${booking.tour.name}`)
+          .booking-card__details
+            h3.booking-card__title= booking.tour.name
+            p.booking-card__date
+              | Date: 
+              span.booking-card__date-value= booking.tour.startDates[0]
+            p.booking-card__price
+              | Price: 
+              span.booking-card__price-value= `${booking.tour.price} USD`
+            p.booking-card__difficulty
+              | Difficulty: 
+              span.booking-card__difficulty-value= booking.tour.difficulty
+            p.booking-card__guide
+              | Guide: 
+              span.booking-card__guide-value= booking.tour.guides[0].name

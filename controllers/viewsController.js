@@ -16,12 +16,6 @@ exports.getOverview = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getEntryPage = catchAsync(async (req, res, next) => {
-  res.status(200).render('entryPage', {
-    title: 'Your Passport to Discovery',
-  });
-});
-
 exports.getTour = catchAsync(async (req, res, next) => {
   // 1) Get the data, for the requested tour (including reviews and guides)
   const tour = await Tour.findOne({ slug: req.params.slug }).populate({
