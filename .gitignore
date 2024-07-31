@@ -5,6 +5,5 @@ npm-debug.log
 .env
 .DS_Store
 dev-data
-public
 config.env
 .cache
